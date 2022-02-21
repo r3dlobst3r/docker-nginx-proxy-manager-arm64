@@ -147,6 +147,10 @@ RUN \
     find /var/lib/nginx/ -type f -name '*.so*' -exec strip {} ';' && \
     strip /usr/sbin/nginx && \
     cd .. && \
+
+    #Install lua-resty-http required for Crowdsec OpenResty Bouncer 
+    /var/lib/nginx/bin/opm get pintsized/lua-resty-http && \
+
     # Cleanup.
     del-pkg build-dependencies && \
     rm -r \
@@ -162,7 +166,6 @@ RUN \
         /var/lib/nginx/luajit/share/man \
         /var/lib/nginx/pod \
         /var/lib/nginx/resty.index \
-        /var/lib/nginx/site \
         && \
     rm \
         /usr/include/maxminddb*.h \
