@@ -15,11 +15,11 @@ if [ -f /config/crowdsec/crowdsec-openresty-bouncer.conf ]; then
     if grep -vf /tmp/crowdsec.conf.raw /tmp/config_example.conf.raw ; then
         grep -vf /tmp/crowdsec.conf.raw /tmp/config_example.conf.raw > /tmp/config_example.newvals
         cp /config/crowdsec/crowdsec-openresty-bouncer.conf /config/crowdsec/crowdsec-openresty-bouncer.conf.bak
-        grep -f /tmp/config_example.newvals /defaults/crowdsec/config_example.conf >> /config/crowdsec/crowdsec-openresty-bouncer.conf
+        grep -f /tmp/config_example.newvals /defaults/crowdsec/crowdsec-openresty-bouncer.conf >> /config/crowdsec/crowdsec-openresty-bouncer.conf
     fi
 else
     echo "Deploy new crowdsec-openresty-bouncer.conf .." 
-    cp /defaults/crowdsec/config_example.conf /config/crowdsec/crowdsec-openresty-bouncer.conf    
+    cp /defaults/crowdsec/crowdsec-openresty-bouncer.conf /config/crowdsec/crowdsec-openresty-bouncer.conf    
 fi
 #Make sure the config location is where we get the config from instead of /default/
 sed -i 's|/defaults/crowdsec|/config/crowdsec|' /config/crowdsec/crowdsec-openresty-bouncer.conf
