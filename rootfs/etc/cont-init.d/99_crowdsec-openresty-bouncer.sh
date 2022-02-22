@@ -7,7 +7,9 @@ log() {
 }
 
 mkdir -p /config/crowdsec/templates/
-echo "Deploy Crowdsec Openresty Bouncer manually.." 
+echo "Deploy Crowdsec Openresty Bouncer.." 
+sed -i 's|/defaults/crowdsec|/config/crowdsec|' /etc/nginx/conf.d/crowdsec_openresty.conf
+
 if [ -f /config/crowdsec/crowdsec-openresty-bouncer.conf ]; then
     echo "Patch crowdsec-openresty-bouncer.conf .." 
     sed "s/=.*//g" /config/crowdsec/crowdsec-openresty-bouncer.conf > /tmp/crowdsec.conf.raw
