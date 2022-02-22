@@ -6,7 +6,7 @@ log() {
     echo "[cont-init.d] $(basename $0): $*"
 }
 
-mkdir -p /config/crowdsec
+mkdir -p /config/crowdsec/templates/
 echo "Deploy Crowdsec Openresty Bouncer manually.." 
 if [ -f /config/crowdsec/crowdsec-openresty-bouncer.conf ]; then
     echo "Patch crowdsec-openresty-bouncer.conf .." 
@@ -21,6 +21,7 @@ else
     echo "Deploy new crowdsec-openresty-bouncer.conf .." 
     cp /defaults/crowdsec/config_example.conf /config/crowdsec/crowdsec-openresty-bouncer.conf    
 fi
+#Make sure the config location is where we get the config from instead of /default/
+sed -i 's|/defaults/crowdsec|/config/crowdsec|' /config/crowdsec/crowdsec-openresty-bouncer.conf
 echo "Deploy Templates .." 
-sed -i 's|/defaults/crowdsec/templates|/config/crowdsec/templates|' /config/crowdsec/crowdsec-openresty-bouncer.conf
 cp -r /defaults/crowdsec/templates/* /config/crowdsec/templates/
