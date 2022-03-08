@@ -378,6 +378,10 @@ RUN \
 
 # Install Crowdsec OpenResty Bouncer.
 RUN \
+    # Install packages needed by the build.
+    add-pkg --virtual build-dependencies \
+        gettext \
+        && \
     # Download the Crowdsec OpenResty Bouncer package.
     echo "Downloading Crowdsec Openresty Bouncer package..." && \
     mkdir crowdsec-openresty-bouncer && \
@@ -388,6 +392,7 @@ RUN \
     bash ./install.sh --NGINX_CONF_DIR=/etc/nginx/conf.d --LIB_PATH=/var/lib/nginx/lualib --CONFIG_PATH=/defaults/crowdsec/ --DATA_PATH=/defaults/crowdsec/ --docker && \
     sed-patch 's|ENABLED=.*|ENABLED=false|' /defaults/crowdsec/crowdsec-openresty-bouncer.conf && \
     # Cleanup.
+    del-pkg build-dependencies && \
     rm -rf /tmp/* /tmp/.[!.]*
 
 # Add files.
