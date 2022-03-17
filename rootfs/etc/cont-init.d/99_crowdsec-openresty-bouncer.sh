@@ -29,7 +29,8 @@ sed -i 's|/defaults/crowdsec|/config/crowdsec|' /config/crowdsec/crowdsec-openre
 echo "Deploy Templates .." 
 
 #Make sure we only copy files that don't exist in config.
-for file in /defaults/crowdsec/templates/*
+cd /defaults/crowdsec/templates/
+for file in *.html
 do
   if [ ! -e "/config/crowdsec/templates/${file}" ]
   then
