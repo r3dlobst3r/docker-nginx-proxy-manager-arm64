@@ -12,7 +12,7 @@ ARG DOCKER_IMAGE_VERSION=unknown
 
 # Define software versions.
 ARG OPENRESTY_VERSION=1.19.9.1
-ARG CROWDSEC_OPENRESTY_BOUNCER_VERSION=0.1.1
+ARG CROWDSEC_OPENRESTY_BOUNCER_VERSION=0.1.7
 ARG NGINX_PROXY_MANAGER_VERSION=2.9.16
 ARG NGINX_HTTP_GEOIP2_MODULE_VERSION=3.3
 ARG LIBMAXMINDDB_VERSION=1.5.0
@@ -20,9 +20,7 @@ ARG WATCH_VERSION=0.3.1
 
 # Define software download URLs.
 ARG OPENRESTY_URL=https://openresty.org/download/openresty-${OPENRESTY_VERSION}.tar.gz
-#Offical Crowdsec download location is currently blocked due to two pull requests waiting to be added for full support for Docker installs
-#ARG CROWDSEC_OPENRESTY_BOUNCER_URL=https://github.com/crowdsecurity/cs-openresty-bouncer/releases/download/v${CROWDSEC_OPENRESTY_BOUNCER_VERSION}/crowdsec-openresty-bouncer.tgz
-ARG CROWDSEC_OPENRESTY_BOUNCER_URL=https://github.com/LePresidente/cs-openresty-bouncer/releases/download/v${CROWDSEC_OPENRESTY_BOUNCER_VERSION}/crowdsec-openresty-bouncer.tgz
+ARG CROWDSEC_OPENRESTY_BOUNCER_URL=https://github.com/crowdsecurity/cs-openresty-bouncer/releases/download/v${CROWDSEC_OPENRESTY_BOUNCER_VERSION}/crowdsec-openresty-bouncer.tgz
 ARG NGINX_PROXY_MANAGER_URL=https://github.com/jc21/nginx-proxy-manager/archive/v${NGINX_PROXY_MANAGER_VERSION}.tar.gz
 ARG NGINX_HTTP_GEOIP2_MODULE_URL=https://github.com/leev/ngx_http_geoip2_module/archive/${NGINX_HTTP_GEOIP2_MODULE_VERSION}.tar.gz
 ARG LIBMAXMINDDB_URL=https://github.com/maxmind/libmaxminddb/releases/download/${LIBMAXMINDDB_VERSION}/libmaxminddb-${LIBMAXMINDDB_VERSION}.tar.gz
@@ -378,6 +376,10 @@ RUN \
 
 # Install Crowdsec OpenResty Bouncer.
 RUN \
+    # Install packages needed by the build.
+    add-pkg --virtual build-dependencies \
+        gettext \
+        && \
     # Download the Crowdsec OpenResty Bouncer package.
     echo "Downloading Crowdsec Openresty Bouncer package..." && \
     mkdir crowdsec-openresty-bouncer && \
@@ -388,6 +390,7 @@ RUN \
     bash ./install.sh --NGINX_CONF_DIR=/etc/nginx/conf.d --LIB_PATH=/var/lib/nginx/lualib --CONFIG_PATH=/defaults/crowdsec/ --DATA_PATH=/defaults/crowdsec/ --docker && \
     sed-patch 's|ENABLED=.*|ENABLED=false|' /defaults/crowdsec/crowdsec-openresty-bouncer.conf && \
     # Cleanup.
+    del-pkg build-dependencies && \
     rm -rf /tmp/* /tmp/.[!.]*
 
 # Add files.
