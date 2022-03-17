@@ -1,4 +1,5 @@
 #!/usr/bin/with-contenv sh
+# shellcheck shell=sh
 
 set -e # Exit immediately if a command exits with a non-zero status.
 
@@ -26,4 +27,12 @@ fi
 #Make sure the config location is where we get the config from instead of /default/
 sed -i 's|/defaults/crowdsec|/config/crowdsec|' /config/crowdsec/crowdsec-openresty-bouncer.conf
 echo "Deploy Templates .." 
-cp -r /defaults/crowdsec/templates/* /config/crowdsec/templates/
+
+#Make sure we only copy files that don't exist in config.
+for file in /defaults/crowdsec/templates/*
+do
+  if [ ! -e "/config/crowdsec/templates/${file}" ]
+  then
+    cp -r "/defaults/crowdsec/templates/${file}" "/config/crowdsec/templates/"
+  fi
+done
