@@ -73,4 +73,7 @@ echo resolver "$(awk 'BEGIN{ORS=" "} $1=="nameserver" { sub(/%.*$/,"",$2); print
 # Take ownership of the config directory content.
 find /config -mindepth 1 -exec chown $USER_ID:$GROUP_ID {} \;
 
+# Take ownership of logs folder.
+find /var/log -mindepth 1 -exec chown $USER_ID:$GROUP_ID {} \;
+
 # vim:ft=sh:ts=4:sw=4:et:sts=4
