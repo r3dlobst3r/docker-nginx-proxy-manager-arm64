@@ -230,7 +230,6 @@ RUN \
         patch \
         yarn \
         git \
-        python2 \
         python3 \
         npm \
         bash \
