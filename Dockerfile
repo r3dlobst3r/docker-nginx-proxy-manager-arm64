@@ -5,7 +5,7 @@
 #
 
 # Pull base image.
-FROM jlesage/baseimage:alpine-3.15-v2.4.6
+FROM --platform=linux/arm64 jlesage/baseimage:alpine-3.17-v3.3.0
 
 # Docker image version is provided via build arg.
 ARG DOCKER_IMAGE_VERSION=unknown
@@ -212,11 +212,11 @@ RUN \
     curl -# -L "https://bootstrap.pypa.io/get-pip.py" | python3 && \
     # Then install certbot.
     CARGO_HOME=/tmp/.cargo pip install --no-cache-dir --prefix=/usr certbot && \
-    find /usr/lib/python3.9/site-packages -type f -name "*.so" -exec strip {} ';' && \
-    find /usr/lib/python3.9/site-packages -type f -name "*.h" -delete && \
-    find /usr/lib/python3.9/site-packages -type f -name "*.c" -delete && \
-    find /usr/lib/python3.9/site-packages -type f -name "*.exe" -delete && \
-    find /usr/lib/python3.9/site-packages -type d -name tests -print0 | xargs -0 rm -r && \
+    find /usr/lib/python3.10/site-packages -type f -name "*.so" -exec strip {} ';' && \
+    find /usr/lib/python3.10/site-packages -type f -name "*.h" -delete && \
+    find /usr/lib/python3.10/site-packages -type f -name "*.c" -delete && \
+    find /usr/lib/python3.10/site-packages -type f -name "*.exe" -delete && \
+    find /usr/lib/python3.10/site-packages -type d -name tests -print0 | xargs -0 rm -r && \
     # Cleanup.
     del-pkg build-dependencies && \
     rm -rf /tmp/* /tmp/.[!.]*
@@ -255,7 +255,7 @@ RUN \
     echo "Building Nginx Proxy Manager frontend..." && \
     cd /app/frontend && \
     yarn install && \
-    yarn build && \
+    NODE_OPTIONS=--openssl-legacy-provider yarn build && \
     /tmp/bin/node-prune && \
     cd /tmp && \
 
@@ -364,10 +364,11 @@ RUN \
         go \
         upx \
         git \
+        binutils \
         musl-dev \
         && \
     mkdir /tmp/go && \
-    env GOPATH=/tmp/go go get gophers.dev/cmds/bcrypt-tool && \
+    env GOPATH=/tmp/go go install gophers.dev/cmds/bcrypt-tool@latest && \
     strip /tmp/go/bin/bcrypt-tool && \
     upx /tmp/go/bin/bcrypt-tool && \
     cp -v /tmp/go/bin/bcrypt-tool /usr/bin/ && \
